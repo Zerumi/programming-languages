@@ -1,0 +1,147 @@
+; check_int.asm
+section .data
+    ok_msg:   db "Okay", 10, 0
+    fail_msg: db "Fail", 10, 0
+    decimal_codes: db "0123456789"
+
+section .text
+
+; getsymbol is a routine to
+; read a symbol (e.g. from stdin)
+; into al
+getsymbol:
+    xor rax, rax
+    xor rdi, rdi
+    dec rsp
+    mov rsi, rsp
+    mov rdx, 1
+    syscall
+    test rax, rax
+    jz .EOF
+    mov al, [rsp]
+    jmp .END
+    .EOF:
+    xor rax, rax
+    .END:
+    inc rsp
+    ret
+
+; rdi - string pointer
+; rsi - num chars
+print_string:
+    mov  rdx, rsi
+    mov  rsi, rdi
+    mov  rax, 1
+    mov  rdi, 1
+    syscall
+    ret
+
+; exit with %rdi code
+exit:
+    mov  rax, 60
+    
+    syscall
+
+global read_uint
+read_uint:
+    xor rdx, rdx
+    xor r9, r9
+    _A:
+    push rdx
+    push r9
+    call getsymbol
+    pop rdx
+    pop r9
+    cmp al, '+'
+    je _B
+    ; The indices of the digit characters in ASCII
+    ; tables fill a range from '0' = 0x30 to '9' = 0x39
+    ; This logic implements the transitions to labels
+    ; _E and _C
+    cmp al, '0'
+    jb _E
+    cmp al, '9'
+    ja _E
+    
+    sub rax, 48
+    push ax
+    inc rdx
+
+    jmp _C
+
+    _B:
+    call getsymbol
+    cmp al, '0'
+    jb _E
+    cmp al, '9'
+    ja _E
+
+    sub rax, 48
+    push ax
+    inc rdx
+
+    jmp _C
+    
+    _C:
+    push rdx
+    push r9
+    call getsymbol
+    pop r9
+    pop rdx
+    test al, al
+    jz _D
+    cmp al, 10
+    jz _D
+    cmp al, '0'
+    jb _E
+    cmp al, '9'
+    ja _E
+    
+    sub rax, 48
+    push ax
+    inc rdx
+
+    jmp _C
+    
+    _D:
+    ; code to notify about success
+    mov rdi, ok_msg
+    mov rsi, 5
+    mov r11, rdx
+    push rdx
+    call print_string
+    pop rdx
+    xor r11, r11
+    mov r10, 10
+.loop:
+    dec rdx
+    mov ax, word[rsp + rdx*2]
+    push rdx
+    mov rcx, rdx
+.mul:
+    test rcx, rcx
+    je .exit
+    dec rcx
+    mul r10
+    jmp .mul
+.exit:
+    add r9, rax
+    pop rdx
+    test rdx, rdx
+    jne .loop
+    
+    add rsp, r11
+    
+    mov rdi, r9
+    call exit
+    
+    _E:
+    ; code to notify about failure
+    mov rdi, fail_msg
+    mov rsi, 5
+    call print_string
+    call exit
+
+global _start
+_start:
+    call read_uint

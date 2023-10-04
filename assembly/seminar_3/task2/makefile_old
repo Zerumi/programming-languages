@@ -1,0 +1,8 @@
+lib.o: lib.asm
+	nasm -o lib.o -f elf64 lib.asm
+	
+lib_test.o: lib_test.asm
+	nasm -o lib_test.o -f elf64 lib_test.asm
+
+program: lib.o lib_test.o
+	ld -o program lib.o lib_test.o
