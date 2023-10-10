@@ -18,7 +18,7 @@ all:
 	make --no-print-directory test
 
 test:
-	echo "test =)"
+	./test.sh
 
 build: $(O_FILES) $(INC_FILES)
 	$(LD) -o $(RESULT_NAME) $(O_FILES)

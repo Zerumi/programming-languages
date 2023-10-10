@@ -3,7 +3,7 @@
 global find_word
 
 section .data
-error_msg1: db "No key found", 0
+error_msg1: db "No key found", 10, 0
 
 section .text
 

@@ -8,7 +8,7 @@ section .bss
 buffer: resb 255
 
 section .data
-error_msg2: db "Buffer overflow / key should be less than 255 symbols", 0
+error_msg2: db "Buffer overflow / key should be less than 255 symbols", 10, 0
 
 section .text
 _start:
