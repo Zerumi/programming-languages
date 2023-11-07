@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
                                                        "list_serialized.txt") ? "true" : "false");
     list_print(serialize_list);
 
+    list_destroy(serialize_list);
     list_destroy(iterated_list);
     list_destroy(mapped_squared_copy);
     list_destroy(mapped_cubed_copy);
