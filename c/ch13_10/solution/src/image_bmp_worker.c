@@ -43,6 +43,8 @@ enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
     uint32_t height = header.biHeight;
     uint32_t width = header.biWidth;
 
+    uint32_t padding_value = BMP_ALIGN - get_padding(width, header.biBitCount);
+
     struct pixel* pixels = malloc(height * width * sizeof (struct pixel));
 
     for (uint32_t i = 0; i < height; i++) {
@@ -55,7 +57,7 @@ enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
             return READ_CORRUPTED;
         }
 
-        if (fseek(opened_binary_file, get_padding(width, header.biBitCount), SEEK_CUR) == -1)
+        if (fseek(opened_binary_file, padding_value, SEEK_CUR) == -1)
             return READ_CORRUPTED;
     }
 
