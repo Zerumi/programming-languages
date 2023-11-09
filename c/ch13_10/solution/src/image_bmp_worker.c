@@ -24,7 +24,7 @@ struct __attribute__((packed)) bmp_header {
 
 static uint32_t get_padding (uint32_t width, uint16_t bit_count) {
     uint32_t total_bytes = width * (bit_count / BITS_IN_BYTE);
-    return total_bytes % BMP_ALIGN;
+    return BMP_ALIGN - total_bytes % BMP_ALIGN;
 }
 
 static struct bmp_header generate_header( uint32_t height, uint32_t width, uint16_t bit_count ) {
@@ -69,7 +69,7 @@ enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
     uint32_t height = header.biHeight;
     uint32_t width = header.biWidth;
 
-    uint32_t padding_value = BMP_ALIGN - get_padding(width, header.biBitCount);
+    uint32_t padding_value = get_padding(width, header.biBitCount);
 
     struct pixel* pixels = malloc(height * width * sizeof (struct pixel));
 
@@ -111,8 +111,8 @@ enum bmp_write_status to_bmp(FILE* opened_binary_file, struct image* in) {
             return WRITE_CORRUPTION;
         }
 
-        if (get_padding(in->width, sizeof (struct pixel) * 3) &&
-                fwrite(&padding, get_padding(in->width, sizeof (struct pixel) * 3),
+        if (get_padding(in->width, sizeof (struct pixel) * BITS_IN_BYTE) &&
+                fwrite(&padding, get_padding(in->width, sizeof (struct pixel) * BITS_IN_BYTE),
                    ITEMS_TO_IO, opened_binary_file) < ITEMS_TO_IO) {
 
             return WRITE_CORRUPTION;
