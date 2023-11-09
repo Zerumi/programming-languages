@@ -12,6 +12,7 @@ int main( int argc, char** argv ) {
     FILE* o = fopen("output.bmp", "wb");
     to_bmp(o, &rotated_img);
     free(img.pixels);
+    free(rotated_img.pixels);
     fclose(o);
     fclose(f);
 

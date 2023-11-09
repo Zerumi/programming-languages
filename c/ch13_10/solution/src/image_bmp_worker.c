@@ -98,7 +98,7 @@ enum bmp_write_status to_bmp(FILE* opened_binary_file, struct image* in) {
         return WRITE_CORRUPTION;
     }
 
-    uint8_t padding[] = {0, 0, 0, 0};
+    uint8_t padding[] = {42, 42, 42, 42}; /* 42! 42! 42! 42! */
 
     for (uint32_t i = 0; i < in->height; i++) {
         if (fwrite(in->pixels + i * in->width,
