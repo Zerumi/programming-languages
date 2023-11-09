@@ -170,7 +170,7 @@ enum read_status from_bmp( FILE* in, struct image* img );
 /*  serializer   */
 enum  write_status  {
   WRITE_OK = 0,
-  WRITE_ERROR
+  WRITE_CORRUPTION
   /* коды других ошибок  */
 };
 
