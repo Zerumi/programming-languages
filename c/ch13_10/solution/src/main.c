@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include "image_bmp_worker.h"
 #include "image_util.h"
 
@@ -34,6 +35,20 @@ const char* write_statuses[] = { "OK",
                            "There's an unexpected error occurred when writing in the file"
 };
 
+static struct image rotate_by_angle(struct image img, long angle) {
+    assert(!(angle % ANGLE_SHOULD_BE_DIVIDABLE_BY_90));
+    const long angle_to_rotate = angle < 0 ? angle + FULL_ROTATE_ANGLE : angle;
+    struct image rotated_img = img;
+    for (long i = 0; i < angle_to_rotate / ANGLE_SHOULD_BE_DIVIDABLE_BY_90; i++) {
+        rotated_img = rotate(rotated_img);
+    }
+    return rotated_img;
+}
+
+static void print_error(const char* error) {
+    fputs(error, stderr);
+}
+
 int main( int argc, char** argv ) {
     (void) argc; (void) argv; // suppress 'unused parameters' warning
 
@@ -50,7 +65,7 @@ int main( int argc, char** argv ) {
     const long angle = strtol(angle_c, &str_to_l_p, STRING_TO_LONG_VALUE_BASE);
 
     if (angle % ANGLE_SHOULD_BE_DIVIDABLE_BY_90) {
-        fputs("Angle should be one of this values: 0, 90, -90, 180, -180, 270, -270", stderr);
+        print_error("Angle should be one of this values: 0, 90, -90, 180, -180, 270, -270");
         return ERR_UNSUPPORTED_ANGLE;
     }
 
@@ -60,32 +75,29 @@ int main( int argc, char** argv ) {
     /* open a file and load source image */
     FILE* f = fopen(input_filename, "rb");
     if (!f) {
-        fputs("Something went wrong during opening input file. Maybe we don't have access to it.", stderr);
+        print_error("Something went wrong during opening input file. Maybe we don't have access to it.");
+        return 0;
     }
 
     const enum bmp_read_status rs = from_bmp(f, &img);
     if (rs) {
-        fputs(read_statuses[rs], stderr);
+        print_error(read_statuses[rs]);
         goto undo_open_f;
     }
 
     /* rotate them */
-    const long angle_to_rotate = angle < 0 ? angle + FULL_ROTATE_ANGLE : angle;
-    struct image rotated_img = img;
-    for (long i = 0; i < angle_to_rotate / 90; i++) {
-        rotated_img = rotate(rotated_img);
-    }
+    struct image rotated_img = rotate_by_angle(img, angle);
 
     /* and save to output file */
     FILE* o = fopen(output_filename, "wb");
     if (!o) {
-        fputs("Something went wrong during opening output file. Maybe we don't have access to it.", stderr);
+        print_error("Something went wrong during opening output file. Maybe we don't have access to it.");
         goto undo_load_image_from_f;
     }
 
     const enum bmp_write_status ws = to_bmp(o, &rotated_img);
     if (ws) {
-        fputs(write_statuses[ws], stderr);
+        print_error(write_statuses[ws]);
         goto undo_open_output_file;
     }
 

@@ -1,4 +1,5 @@
 #include "image_bmp_worker.h"
+#define BITS_SUPPORTED 24
 #define BITS_IN_BYTE 8
 #define BMP_ALIGN 4
 #define ITEMS_TO_IO 1
@@ -26,6 +27,31 @@ static uint32_t get_padding (uint32_t width, uint16_t bit_count) {
     return total_bytes % BMP_ALIGN;
 }
 
+static struct bmp_header generate_header( uint32_t height, uint32_t width, uint16_t bit_count ) {
+    struct bmp_header result = {
+            .bfType = 19778,
+            .bfileSize =
+            sizeof (struct bmp_header) + height * width * bit_count
+            + get_padding(width, bit_count) * height,
+            .bfReserved = 0,
+            .bOffBits = 54,
+
+            .biSize = 40,
+            .biWidth = width,
+            .biHeight = height,
+            .biPlanes = 1,
+            .biBitCount = bit_count,
+            .biCompression = 0,
+            .biSizeImage = 0, /* allowed because .biCompression = 0 */
+            .biXPelsPerMeter = 2834,
+            .biYPelsPerMeter = 2834,
+            .biClrUsed = 0,
+            .biClrImportant = 0
+    };
+
+    return result;
+}
+
 enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
 
     struct bmp_header header = { 0 };
@@ -37,7 +63,7 @@ enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
             return READ_CORRUPTED;
     }
 
-    if (header.biBitCount != 24)
+    if (header.biBitCount != BITS_SUPPORTED)
         return READ_UNSUPPORTED_BITS;
 
     uint32_t height = header.biHeight;
@@ -65,31 +91,6 @@ enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out) {
     out->width = width;
     out->pixels = pixels;
     return READ_OK;
-}
-
-static struct bmp_header generate_header( uint32_t height, uint32_t width, uint16_t bit_count ) {
-    struct bmp_header result = {
-            .bfType = 19778,
-            .bfileSize =
-                    sizeof (struct bmp_header) + height * width * bit_count
-                            + get_padding(width, bit_count) * height,
-            .bfReserved = 0,
-            .bOffBits = 54,
-
-            .biSize = 40,
-            .biWidth = width,
-            .biHeight = height,
-            .biPlanes = 1,
-            .biBitCount = bit_count,
-            .biCompression = 0,
-            .biSizeImage = 0, /* allowed because .biCompression = 0 */
-            .biXPelsPerMeter = 2834,
-            .biYPelsPerMeter = 2834,
-            .biClrUsed = 0,
-            .biClrImportant = 0
-    };
-
-    return result;
 }
 
 enum bmp_write_status to_bmp(FILE* opened_binary_file, struct image* in) {
