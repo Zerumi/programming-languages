@@ -109,6 +109,9 @@ static int32_t interpret_image_blur(struct vm_state* state) {
 
 
 static int32_t interpret_exit(struct vm_state* state) {
+    if (state->current_image.pixels) {
+        free(state->current_image.pixels);
+    }
     state->ip = NULL;
     return EXECUTED_OK;
 }

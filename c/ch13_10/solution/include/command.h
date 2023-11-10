@@ -1,8 +1,8 @@
 #ifndef IMAGE_TRANSFORMER_COMMANDS_H
 #define IMAGE_TRANSFORMER_COMMANDS_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 enum opcode {
     FILE_OPEN, FILE_CLOSE,

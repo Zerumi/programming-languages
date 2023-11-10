@@ -2,8 +2,8 @@
 #define IMAGE_TRANSFORMER_IMAGE_H
 
 #include <inttypes.h>
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 struct pixel {
     uint8_t b, g, r;
