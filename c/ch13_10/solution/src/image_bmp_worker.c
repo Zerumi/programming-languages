@@ -24,7 +24,7 @@ struct __attribute__((packed)) bmp_header {
 
 static uint32_t get_padding (uint32_t width, uint16_t bit_count) {
     uint32_t total_bytes = width * (bit_count / BITS_IN_BYTE);
-    return BMP_ALIGN - total_bytes % BMP_ALIGN;
+    return (BMP_ALIGN - total_bytes % BMP_ALIGN) % BMP_ALIGN;
 }
 
 static struct bmp_header generate_header( uint32_t height, uint32_t width, uint16_t bit_count ) {
