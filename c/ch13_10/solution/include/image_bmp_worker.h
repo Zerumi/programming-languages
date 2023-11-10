@@ -11,12 +11,15 @@ enum bmp_read_status {
     READ_CORRUPTED,
     READ_INVALID_SIGNATURE,
     READ_UNSUPPORTED_BITS,
-    READ_INVALID_HEADER
+    READ_INVALID_HEADER,
+    READ_NO_FILE
 };
 
 enum bmp_write_status {
     WRITE_OK = 0,
-    WRITE_CORRUPTION
+    WRITE_CORRUPTION,
+    WRITE_NO_FILE,
+    WRITE_NO_IMAGE
 };
 
 enum bmp_read_status from_bmp(FILE* opened_binary_file, struct image* out);

@@ -2,16 +2,18 @@
 #define IMAGE_TRANSFORMER_COMMANDS_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 enum opcode {
     FILE_OPEN, FILE_CLOSE,
-    IMAGE_LOAD, IMAGE_ROTATE, IMAGE_BLUR, IMAGE_SAVE,
+    IMAGE_LOAD_BMP, IMAGE_SAVE_BMP,
+    IMAGE_ROTATE, IMAGE_BLUR,
     EXIT
 };
 
 struct command_status {
     enum opcode command;
-    uint32_t status_code;
+    int32_t status_code;
 };
 
 struct c_noargs {
@@ -20,6 +22,7 @@ struct c_noargs {
 
 struct c_args {
     enum opcode opcode;
+    size_t argc;
     char** args;
 };
 
