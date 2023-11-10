@@ -1,9 +1,10 @@
 #ifndef IMAGE_TRANSFORMER_IMAGE_BMP_WORKER_H
 #define IMAGE_TRANSFORMER_IMAGE_BMP_WORKER_H
 
+#include "image.h"
+
 #include <stdint.h>
 #include <stdio.h>
-#include "image.h"
 
 enum bmp_read_status {
     READ_OK = 0,

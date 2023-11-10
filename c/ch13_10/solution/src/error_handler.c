@@ -1,5 +1,3 @@
-#include <string.h>
-#include <errno.h>
 #include "error_handler.h"
 
 /*
@@ -45,7 +43,7 @@ bool console_handle_write_error(const enum bmp_write_status write_status) {
 
 bool console_handle_file_error(const enum file_status file_status, const char* filename) {
     if (file_status) {
-        print_error(strcat("Something went wrong during open ", filename));
+        fprintf(stderr, "Something went wrong during open %s\n", filename);
         print_error(strerror(errno));
     }
     return file_status;

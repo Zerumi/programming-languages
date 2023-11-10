@@ -4,7 +4,9 @@
 #include "image_bmp_worker.h"
 #include "io_handler.h"
 
+#include <errno.h>
 #include <stdbool.h>
+#include <string.h>
 
 void print_error(const char* error);
 

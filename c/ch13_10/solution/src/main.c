@@ -3,13 +3,13 @@
  * 1) Duplicated lines in case of undoing some operations or freeing resources
  */
 
+#include "error_handler.h"
 #include "image_bmp_worker.h"
 #include "image_util.h"
-#include "error_handler.h"
 
-#include <stdio.h>
 #include <assert.h>
-#include <memory.h>
+#include <stdio.h>
+#include <string.h>
 
 #define ANGLE_SHOULD_BE_DIVIDABLE_BY_90 90
 #define STRING_TO_LONG_VALUE_BASE 10
@@ -45,7 +45,7 @@ int main( int argc, char** argv ) {
     (void) argc; (void) argv; // suppress 'unused parameters' warning
 
     if (argc != 4) {
-        print_error(strcat("Usage: ", strcat(argv[ARGV_PROGRAM_NAME], " <source-image> <transformed-image> <angle>\n")));
+        fprintf(stderr, "Usage: %s <source-image> <transformed-image> <angle>\n", argv[ARGV_PROGRAM_NAME]);
         return ERR_NOT_ENOUGH_ARGUMENTS;
     }
 
@@ -83,21 +83,18 @@ int main( int argc, char** argv ) {
     if (console_handle_file_error(
             try_open_file(output_filename, "wb", &o),
             output_filename)) {
-        if(angle != 0)
-            free(rotated_img.pixels);
+        free(rotated_img.pixels);
         fclose(f);
         return ERR_FILE;
     }
     if (console_handle_write_error(to_bmp(o, &rotated_img))) {
-        if(angle != 0)
-            free(rotated_img.pixels);
+        free(rotated_img.pixels);
         fclose(o);
         fclose(f);
         return ERR_WRITE;
     }
 
-    if(angle != 0)
-        free(rotated_img.pixels);
+    free(rotated_img.pixels);
     fclose(o);
     fclose(f);
 
