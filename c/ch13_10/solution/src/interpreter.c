@@ -7,12 +7,6 @@
 #define ARGUMENT_FILEMODE 1
 #define ARGUMENT_ANGLE 0
 
-#define ERROR_ARGUMENT_COUNT_ERROR 1
-#define ERROR_ARGUMENT_ERROR 2
-#define ERROR_FILE_ERROR 3
-
-#define EXECUTED_OK 0
-
 #define FULL_ROTATE_ANGLE 360
 #define ANGLE_SHOULD_BE_DIVIDABLE_BY_90 90
 #define STRING_TO_LONG_VALUE_BASE 10
@@ -32,8 +26,8 @@ static int32_t interpret_file_open(struct vm_state* state) {
 }
 
 static int32_t interpret_file_close(struct vm_state* state) {
-    if (!state->current_opened_file) return EIO;
-    if (fclose(state->current_opened_file)) return errno;
+    if (!state->current_opened_file) return ERROR_NO_FILE_ERROR;
+    if (fclose(state->current_opened_file)) return ERROR_FILE_ERROR;
     return EXECUTED_OK;
 }
 
@@ -94,7 +88,7 @@ static int32_t exec_image_blur(struct vm_state* state) {
 
 static int32_t interpret_image_command(struct vm_state* state, int32_t(image_operation)(struct vm_state*)) {
     if (image_compare(&state->current_image, &ZERO_IMAGE)) {
-        return ERROR_ARGUMENT_COUNT_ERROR;
+        return ERROR_NO_IMAGE_ERROR;
     }
     return image_operation(state);
 }
@@ -133,7 +127,7 @@ struct interpreter_state interpret(struct vm_state* state) {
     for (;state->ip;) {
         struct command_status status = { .command = state->ip->opcode };
         status.status_code = interpreters[state->ip->opcode](state);
-        i_state.last_executed_command = status;
+        i_state.last_executed_command_status = status;
         if (status.status_code) {
             i_state.status_code = EXECUTION_ERROR;
             break;

@@ -12,7 +12,16 @@
 enum interpreter_states {
     OK = 0,
     EXECUTION_ERROR,
-    INTERPRETATION_ERROR
+    INTERPRETATION_ERROR /* reserved for parser */
+};
+
+enum command_error_codes {
+    EXECUTED_OK = 0,
+    ERROR_ARGUMENT_COUNT_ERROR = 43,
+    ERROR_ARGUMENT_ERROR,
+    ERROR_FILE_ERROR,
+    ERROR_NO_FILE_ERROR,
+    ERROR_NO_IMAGE_ERROR
 };
 
 struct vm_state {
@@ -23,7 +32,7 @@ struct vm_state {
 
 struct interpreter_state {
     enum interpreter_states status_code;
-    struct command_status last_executed_command;
+    struct command_status last_executed_command_status;
 };
 
 struct interpreter_state interpret(struct vm_state* state);
