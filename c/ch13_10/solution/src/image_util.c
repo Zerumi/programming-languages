@@ -54,9 +54,54 @@ static void blur_padding_white(struct image image) {
     blur_padding_solid_color(image, (struct pixel) { .r = 255, .g = 255, .b = 255 });
 }
 
+static void blur_padding_reflection(struct image image) {
+    for (uint32_t i = 0; i < image.width; ++i) {
+        image.pixels[get_position(0, i, image.width)] =
+                image.pixels[get_position(1, i, image.width)];
+    }
+    for (uint32_t i = 0; i < image.width; ++i) {
+        image.pixels[get_position(image.height - 1, i, image.width)] =
+                image.pixels[get_position(image.height - 2, i, image.width)];
+    }
+    for (uint32_t i = 0; i < image.height; ++i) {
+        image.pixels[get_position(i, 0, image.width)] =
+                image.pixels[get_position(i, 1, image.width)];
+    }
+    for (uint32_t i = 0; i < image.height; ++i) {
+        image.pixels[get_position(i, image.width - 1, image.width)] =
+                image.pixels[get_position(i, image.width - 2, image.width)];
+    }
+}
+
+static void blur_padding_img_loop(struct image image) {
+    for (uint32_t i = 0; i < image.width; ++i) {
+        image.pixels[get_position(0, i, image.width)] =
+                image.pixels[get_position(image.height - 2, i, image.width)];
+    }
+    for (uint32_t i = 0; i < image.width; ++i) {
+        image.pixels[get_position(image.height - 1, i, image.width)] =
+                image.pixels[get_position(1, i, image.width)];;
+    }
+    for (uint32_t i = 0; i < image.height; ++i) {
+        image.pixels[get_position(i, 0, image.width)] =
+                image.pixels[get_position(i, image.width - 2, image.width)];
+    }
+    for (uint32_t i = 0; i < image.height; ++i) {
+        image.pixels[get_position(i, image.width - 1, image.width)] =
+                image.pixels[get_position(i, 1, image.width)];
+    }
+}
+
+static void blur_padding_border_pixel(struct image image) {
+    blur_padding_solid_color(image, image.pixels[get_position(0,0,image.width)]);
+}
+
 static void(*padding_functions[])(struct image) = {
         [BLACK] = blur_padding_black,
-        [WHITE] = blur_padding_white
+        [WHITE] = blur_padding_white,
+        [REFLECTION] = blur_padding_reflection,
+        [IMAGE_LOOP] = blur_padding_img_loop,
+        [BORDER_PIXEL] = blur_padding_border_pixel
 };
 
 static struct image blur_apply_padding(struct image image, void(fill)(struct image)) {
