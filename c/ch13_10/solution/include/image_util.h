@@ -17,6 +17,6 @@ enum blur_border_identity_padding {
 };
 
 struct image rotate(struct image src);
-struct image blur(struct image src, enum blur_border_identity_padding);
+struct image blur(struct image src, enum blur_border_identity_padding mode);
 
 #endif //IMAGE_TRANSFORMER_IMAGE_UTIL_H
