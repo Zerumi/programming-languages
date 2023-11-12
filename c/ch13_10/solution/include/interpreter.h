@@ -10,7 +10,18 @@
 #include <stdio.h>
 
 #define ARG_COUNT_IMAGE_BLUR 1
+#define ARG_COUNT_FILE_OPEN 2
+#define ARG_COUNT_IMAGE_ROTATE 1
+
+#define ARGUMENT_FILENAME 0
+#define ARGUMENT_FILEMODE 1
+#define ARGUMENT_ANGLE 0
 #define ARGUMENT_MODE 0
+
+#define FULL_ROTATE_ANGLE 360
+#define ANGLE_SHOULD_BE_DIVIDABLE_BY_90 90
+#define STRING_TO_LONG_VALUE_BASE 10
+
 enum interpreter_states {
     OK = 0,
     EXECUTION_ERROR,

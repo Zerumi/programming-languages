@@ -3,6 +3,10 @@
 
 #include "image.h"
 
+#include <libc.h>
+
+#define PIXELS_COUNT 9
+
 enum blur_border_identity_padding {
     NO_PADDING = 0,
     BLACK,

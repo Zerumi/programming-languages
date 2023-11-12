@@ -1,7 +1,4 @@
-#include <libc.h>
 #include "image_util.h"
-
-#define PIXELS_COUNT 9
 
 struct image rotate(struct image const src) {
     size_t position = 0;
