@@ -107,10 +107,19 @@ static struct image blur_apply_padding(struct image image, void(fill)(struct ima
     result.height = image.height + 2;
     result.pixels = malloc(result.width * result.height * sizeof (struct pixel));
 
+    /* not working in gitlab tests
     for (uint32_t row = 1; row < result.height - 1; row++) {
         memcpy(result.pixels + get_position(row, 1, result.width),
                image.pixels + get_position(row - 1, 0, image.width),
                image.width * sizeof (struct pixel));
+    }
+     */
+
+    for (uint32_t image_row = 1; image_row < result.height - 1; image_row++) {
+        for (uint32_t image_col = 1; image_col < result.width - 1; image_col++) {
+            result.pixels[get_position(image_row, image_col, result.width)] =
+                    image.pixels[get_position(image_row - 1, image_col - 1, image.width)];
+        }
     }
 
     fill(result);

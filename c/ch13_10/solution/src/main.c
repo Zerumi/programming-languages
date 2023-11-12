@@ -25,17 +25,14 @@ int main( int argc, char** argv ) {
     }
 
     const char* arguments_f_open[] = { argv[ARGV_INPUT_FILENAME], "rb" };
-    //const char* arguments_i_rotate[] = { argv[ARGV_ANGLE] };
+    const char* arguments_i_rotate[] = { argv[ARGV_ANGLE] };
     const char* arguments_o_open[] = { argv[ARGV_OUTPUT_FILENAME], "wb" };
-
-    const char* arguments_b[] = { "0" };
 
     const union ins program[] = {
             { .as_args = {FILE_OPEN, 2, (char **)arguments_f_open} },
             { IMAGE_LOAD_BMP },
             { FILE_CLOSE },
-            /* { .as_args = {IMAGE_ROTATE, 1, (char **)arguments_i_rotate} }, */
-            { .as_args = {IMAGE_BLUR, 1, (char**)arguments_b } },
+            { .as_args = {IMAGE_ROTATE, 1, (char **)arguments_i_rotate} },
             { .as_args = {FILE_OPEN, 2, (char **)arguments_o_open} },
             { IMAGE_SAVE_BMP },
             { FILE_CLOSE },

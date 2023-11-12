@@ -3,7 +3,7 @@
 
 #include "image.h"
 
-#include <libc.h>
+#include <memory.h>
 
 #define PIXELS_COUNT 9
 
