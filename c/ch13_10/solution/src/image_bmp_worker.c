@@ -1,8 +1,4 @@
 #include "image_bmp_worker.h"
-#define BITS_SUPPORTED 24
-#define BITS_IN_BYTE 8
-#define BMP_ALIGN 4
-#define ITEMS_TO_IO 1
 
 struct __attribute__((packed)) bmp_header {
     uint16_t bfType;
@@ -29,24 +25,24 @@ static uint32_t get_padding (uint32_t width, uint16_t bit_count) {
 
 static struct bmp_header generate_header( uint32_t height, uint32_t width, uint16_t bit_count ) {
     struct bmp_header result = {
-            .bfType = 19778,
+            .bfType = BMP_TYPE,
             .bfileSize =
             sizeof (struct bmp_header) + height * width * bit_count
             + get_padding(width, bit_count) * height,
-            .bfReserved = 0,
-            .bOffBits = 54,
+            .bfReserved = BMP_RESERVED,
+            .bOffBits = sizeof (struct bmp_header),
 
-            .biSize = 40,
+            .biSize = BMP_SUBHEADER_SIZE,
             .biWidth = width,
             .biHeight = height,
-            .biPlanes = 1,
+            .biPlanes = BMP_PLANES,
             .biBitCount = bit_count,
-            .biCompression = 0,
+            .biCompression = BMP_NO_COMPRESSION,
             .biSizeImage = 0, /* allowed because .biCompression = 0 */
-            .biXPelsPerMeter = 2834,
-            .biYPelsPerMeter = 2834,
-            .biClrUsed = 0,
-            .biClrImportant = 0
+            .biXPelsPerMeter = BMP_DEFAULT_SCALE,
+            .biYPelsPerMeter = BMP_DEFAULT_SCALE,
+            .biClrUsed = BMP_CLR_UNUSED,
+            .biClrImportant = BMP_CLR_NOT_IMPORTANT
     };
 
     return result;

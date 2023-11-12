@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-struct pixel {
+struct __attribute__((packed)) pixel {
     uint8_t b, g, r;
 };
 

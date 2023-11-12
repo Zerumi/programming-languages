@@ -9,6 +9,8 @@
 #include <errno.h>
 #include <stdio.h>
 
+#define ARG_COUNT_IMAGE_BLUR 1
+#define ARGUMENT_MODE 0
 enum interpreter_states {
     OK = 0,
     EXECUTION_ERROR,

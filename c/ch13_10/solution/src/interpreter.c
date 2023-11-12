@@ -79,7 +79,16 @@ static int32_t exec_image_rotate(struct vm_state* state) {
 }
 
 static int32_t exec_image_blur(struct vm_state* state) {
-    struct image blurred_image  = blur(state->current_image);
+    if (state->ip->as_args.argc != ARG_COUNT_IMAGE_BLUR) {
+        return ERROR_ARGUMENT_COUNT_ERROR;
+    }
+    
+    const char* mode_c = state->ip->as_args.args[ARGUMENT_MODE];
+
+    char* str_to_l_p;
+    const long mode = strtol(mode_c, &str_to_l_p, STRING_TO_LONG_VALUE_BASE);
+    
+    struct image blurred_image  = blur(state->current_image, mode);
     free(state->current_image.pixels);
 
     state->current_image = blurred_image;
