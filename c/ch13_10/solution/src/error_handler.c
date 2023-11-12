@@ -44,7 +44,7 @@ static const char* command_arguments_fetch_list[] = {
         "N/A",
         "N/A",
         "Usage: IMAGE_ROTATE <angle>. Angle must be dividable by 90!",
-        "N/A",
+        "Usage: IMAGE_BLUR <mode>. Supported modes: from 0 to 4.",
         "N/A"
 };
 
