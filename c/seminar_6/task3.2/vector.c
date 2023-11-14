@@ -53,6 +53,8 @@ size_t vector_capacity(struct vector const* a) {
 
 void vector_change_size(struct vector* a, size_t i) {
     a->data = realloc(a->data, sizeof(int64_t) * i);
+    if (i < a->count)
+        a->count = i;
     a->capacity = i;
 }
 
